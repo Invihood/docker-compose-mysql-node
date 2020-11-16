@@ -1,0 +1,28 @@
+version: "2.4"
+
+services:
+    db:
+        image: mysql:5.7
+        environment: 
+            MYSQL_ROOT_PASSWORD: password
+            MYSQL_DATABASE: TEST_DB
+        volumes: 
+            - ./db:/docker-entrypoint-initdb.d
+            - mysql_volume:/var/lib/mysql
+    web:
+        image: node
+        build: server/
+        depends_on:
+            - "db"
+        environment: 
+            MYSQL_ROOT_PASSWORD: password 
+            MYSQL_USER: root 
+            MYSQL_HOST: db 
+            MYSQL_DATABASE: TEST_DB
+        ports:
+            - "8080:8080"
+        volumes:
+            - ./server:/usr/src/app
+
+volumes:
+    mysql_volume: 
